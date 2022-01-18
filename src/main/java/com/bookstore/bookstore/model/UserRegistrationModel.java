@@ -22,6 +22,7 @@ public class UserRegistrationModel
 	@Column(name = "email")
 	private String emailId;
 	private String password;
+	private String mobileNo;
 	private boolean verify;
 
 	
@@ -31,7 +32,7 @@ public class UserRegistrationModel
 
 	public UserRegistrationModel(int Id, UserRegistrationDTO userRegistrationDTO)
 	{
-
+		this.mobileNo=userRegistrationDTO.getMobileNo();
 		this.fullName = userRegistrationDTO.getFullName();
 		this.emailId = userRegistrationDTO.getEmailId();
 		this.password = userRegistrationDTO.getPassword();

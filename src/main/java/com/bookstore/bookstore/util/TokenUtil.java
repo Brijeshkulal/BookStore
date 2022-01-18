@@ -22,7 +22,6 @@ public class TokenUtil
 			        
 			       String token = JWT.create().withClaim("user_id", userId)
 			       .sign(algorithm);
-			        
 			       return token;
 		      }
 		      catch (Exception exception) 

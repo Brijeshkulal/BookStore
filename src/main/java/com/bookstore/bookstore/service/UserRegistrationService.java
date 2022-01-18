@@ -8,7 +8,6 @@ import com.bookstore.bookstore.model.UserRegistrationModel;
 import com.bookstore.bookstore.repository.UserRegistrationRepository;
 import com.bookstore.bookstore.util.JMSUtil;
 import com.bookstore.bookstore.util.TokenUtil;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
