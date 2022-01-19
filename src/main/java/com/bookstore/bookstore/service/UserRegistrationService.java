@@ -11,7 +11,11 @@ import com.bookstore.bookstore.util.JMSUtil;
 import com.bookstore.bookstore.util.TokenUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+<<<<<<< HEAD
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+=======
+import org.springframework.security.crypto.password.PasswordEncoder;
+>>>>>>> 1d7da98607b0e72eda8c0a73ac5209819b9f2880
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -25,7 +29,14 @@ public class UserRegistrationService implements IUserRegistrationService {
 	private UserRegistrationRepository userRepository;
 
 	@Autowired
+<<<<<<< HEAD
 	private JMSUtil jmsUtil;
+=======
+	private PasswordEncoder passwordEncoder;
+
+	@Autowired
+	private  JMSUtil jmsUtil;
+>>>>>>> 1d7da98607b0e72eda8c0a73ac5209819b9f2880
 
 	@Autowired
 	private ModelMapper modelmapper;
@@ -36,7 +47,12 @@ public class UserRegistrationService implements IUserRegistrationService {
 	@Override
 	public ResponseDTO createUser(UserRegistrationDTO userDTO) {
 		Optional<UserRegistrationModel> isUserPresent = userRepository.findByEmailId(userDTO.getEmailId());
+<<<<<<< HEAD
 		if (!isUserPresent.isPresent()) {
+=======
+		if(!isUserPresent.isPresent())
+		{
+>>>>>>> 1d7da98607b0e72eda8c0a73ac5209819b9f2880
 			// Encoding User Entered Password and saving into database
 			userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
@@ -49,25 +65,26 @@ public class UserRegistrationService implements IUserRegistrationService {
 		}
 	}
 	@Override
-	public ResponseDTO updateUserById(String token,int userid, UserRegistrationDTO userDTO) 
+	public ResponseDTO updateUserById(String token, int userid, UserRegistrationDTO userDTO)
 	{
 		int userId = TokenUtil.decodeToken(token);
 		Optional<UserRegistrationModel> isUserPresent = userRepository.findById(userId);
-		if (!isUserPresent.isPresent()) 
+		if (isUserPresent.isPresent())
 		{
+//		if (isUserPresent.isPresent())
+//		{
 			isUserPresent.get().setFullName(userDTO.getFullName());
-
 			isUserPresent.get().setEmailId(userDTO.getEmailId());
-			isUserPresent.get().setPassword(userDTO.getPassword());
+			isUserPresent.get().setPassword(passwordEncoder.encode(userDTO.getPassword()));
 			isUserPresent.get().setUpdatedDate(LocalDate.now());
-			
+			isUserPresent.get().setMobileNo(userDTO.getMobileNo());
 			userRepository.save(isUserPresent.get());
 			return new ResponseDTO("User Updated Successfully");
-		}
-		else 
-		{
-			throw new UserRegistrationException(400,"User is already Register, Please Try with another Email Id");
-		}
+//		}
+//		else
+//		{
+//			throw new UserRegistrationException(400,"User is already Register, Please Try with another Email Id");
+//		}
 	}
 
 	@Override
@@ -86,25 +103,27 @@ public class UserRegistrationService implements IUserRegistrationService {
 		}
 	}
 
-
 	@Override
 	public ResponseDTO loginUser(LoginDto loginDto)
 	{
 		Optional<UserRegistrationModel> isUserPresent = userRepository.findByEmailId(loginDto.emailId);
 
-		if (isUserPresent.isPresent()) 
+//		loginDto.setPassword(passwordEncoder.encode(loginDto.getPassword()));
+//		passwordEncoder.encode(loginDto.em)
+		if (isUserPresent.isPresent())
 		{
-			if (isUserPresent.get().getEmailId().equals(loginDto.emailId) && isUserPresent.get().getPassword().equals(loginDto.password))
+			if (isUserPresent.get().getEmailId().equals(loginDto.emailId) &&
+					isUserPresent.get().getPassword().equals(loginDto.password))
 			{
 				String token = TokenUtil.createToken(isUserPresent.get().getId());
 				return new ResponseDTO("Login is Sucessfully");
 			}
-			else 
+			else
 			{
 				throw new UserRegistrationException(400,"Please check Email Id or Password, Retry");
 			}
-		} 
-		else 
+		}
+		else
 		{
 			throw new UserRegistrationException(400,"User is already Register, Please Try with another Email Id");
 		}
@@ -124,7 +143,6 @@ public class UserRegistrationService implements IUserRegistrationService {
 		}
 
 	}
-
 	@Override
 	public Boolean verify(String token) 
 	{
@@ -140,7 +158,6 @@ public class UserRegistrationService implements IUserRegistrationService {
 			return false;
 		}
 	}
-
 
 	@Override
 	public int getUserId(String token) 
@@ -174,4 +191,24 @@ public class UserRegistrationService implements IUserRegistrationService {
 			throw new UserRegistrationException(400,"Password reset failed");
 		}
 	}
+
+	@Override
+	public ResponseDTO resetPassword(ResetPassword password, String token)
+	{
+		int userId = TokenUtil.decodeToken(token);
+		Optional<UserRegistrationModel> isUserPresent = userRepository.findById(userId);
+		if (isUserPresent.isPresent())
+		{
+			isUserPresent.get().setPassword(password.getPassword());
+			isUserPresent.get().setUpdatedDate(LocalDate.now());
+
+			userRepository.save(isUserPresent.get());
+			return new ResponseDTO("Password updated successfully");
+		}
+		else
+		{
+			throw new UserRegistrationException(400,"Password reset failed");
+		}
+	}
 }
+

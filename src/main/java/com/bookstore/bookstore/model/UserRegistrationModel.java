@@ -2,6 +2,8 @@ package com.bookstore.bookstore.model;
 
 import com.bookstore.bookstore.dto.UserRegistrationDTO;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -11,7 +13,7 @@ import java.time.LocalDate;
 @Data
 public class UserRegistrationModel 
 {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int Id;

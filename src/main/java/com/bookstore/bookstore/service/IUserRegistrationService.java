@@ -11,7 +11,7 @@ public interface IUserRegistrationService
 
 	ResponseDTO createUser(UserRegistrationDTO userDTO);
 
-	ResponseDTO updateUserById(String token,int userid, UserRegistrationDTO userDTO);
+	ResponseDTO updateUserById(String token, int userid, UserRegistrationDTO userDTO);
 	
 	ResponseDTO deleteUserById(String token, int userid);
 
@@ -21,7 +21,7 @@ public interface IUserRegistrationService
 
 	Boolean verify(String token);
 
-
+	ResponseDTO resetPassword(ResetPassword password, String token);
 	int getUserId(String token);
 
     ResponseDTO resetPassword(ResetPassword password, String token);

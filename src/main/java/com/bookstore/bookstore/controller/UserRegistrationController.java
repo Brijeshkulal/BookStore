@@ -1,6 +1,7 @@
 package com.bookstore.bookstore.controller;
 
 import com.bookstore.bookstore.dto.LoginDto;
+import com.bookstore.bookstore.dto.ResetPassword;
 import com.bookstore.bookstore.dto.ResponseDTO;
 import com.bookstore.bookstore.dto.UserRegistrationDTO;
 import com.bookstore.bookstore.service.IUserRegistrationService;
@@ -10,28 +11,35 @@ import org.springframework.http.HttpStatus;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-@CrossOrigin(origins = "*",allowedHeaders = "*")
+<<<<<<< HEAD
+
+=======
+>>>>>>> cd41e0a9d1edd9e8ea6ac41a35929f1b6211299b
 @RestController
 @Slf4j
+<<<<<<< HEAD
 public class UserRegistrationController 
 {
 	
+=======
+@CrossOrigin(origins = "*",allowedHeaders = "*")
+public class UserRegistrationController {
+
+>>>>>>> 1d7da98607b0e72eda8c0a73ac5209819b9f2880
 	@Autowired(required = true)
 	private IUserRegistrationService registrationService;
 
-	
+
 	@PostMapping("/createuser")
-	public ResponseEntity<ResponseDTO> createUser(@RequestBody UserRegistrationDTO userDTO)
-	{
+	public ResponseEntity<ResponseDTO> createUser(@RequestBody UserRegistrationDTO userDTO) {
 		ResponseDTO userData = registrationService.createUser(userDTO);
 		ResponseDTO resDTO = new ResponseDTO("Create User Details Sucessfully :");
-		//log.warn(ResponseEntity<ResponseDTO>(resDTO,HttpStatus.OK));
 		log.info(String.valueOf(resDTO));
-		return new ResponseEntity<ResponseDTO>(resDTO,HttpStatus.OK);
+		return new ResponseEntity<ResponseDTO>(resDTO, HttpStatus.OK);
 	}
 
-	@PutMapping("/updateuser/{token}/{userid}")
-	public ResponseEntity<ResponseDTO> updateUser(@PathVariable String token,@PathVariable int userid, @RequestBody UserRegistrationDTO userDTO){
+	@PutMapping("/updateuser/{token}")
+	public ResponseEntity<ResponseDTO> updateUser(@PathVariable String token,@PathVariable int userid, @RequestBody UserRegistrationDTO userDTO) {
 		ResponseDTO respDTO = registrationService.updateUserById(token,userid, userDTO);
 		return new ResponseEntity<ResponseDTO>(respDTO, HttpStatus.OK);
 	}
@@ -43,29 +51,31 @@ public class UserRegistrationController
 	}
 
 	@PostMapping("/loginuser")
-	public ResponseEntity<ResponseDTO> loginUser(@RequestBody LoginDto loginDto)
-	{
+	public ResponseEntity<ResponseDTO> loginUser(@RequestBody LoginDto loginDto) {
 		ResponseDTO respDTO = registrationService.loginUser(loginDto);
 		return new ResponseEntity<ResponseDTO>(respDTO, HttpStatus.OK);
 	}
 
 	@PostMapping("/forgotpassword")
-	public ResponseEntity<ResponseDTO> forgotPassword(@RequestParam String email)
-	{
+	public ResponseEntity<ResponseDTO> forgotPassword(@RequestParam String email) {
 		ResponseDTO respDTO = registrationService.forgotPassword(email);
 		return new ResponseEntity<ResponseDTO>(respDTO, HttpStatus.OK);
 	}
 
+
 	@GetMapping("/verifyemail/{token}")
-	public Boolean verifyEmail(@PathVariable String token)
-	{
+	public Boolean verifyEmail(@PathVariable String token) {
 		return registrationService.verify(token);
 	}
 
 	@GetMapping("/getuserid/{token}")
-	public int getUserId(@PathVariable String token)
-	{
+	public int getUserId(@PathVariable String token) {
 		return registrationService.getUserId(token);
 	}
 
+	@PostMapping("/resetpassword/{token}")
+	ResponseEntity<ResponseDTO> resetPassword(@RequestBody ResetPassword password, @PathVariable String token) {
+		ResponseDTO respDTO = registrationService.resetPassword(password, token);
+		return new ResponseEntity<ResponseDTO>(respDTO, HttpStatus.OK);
+	}
 }
