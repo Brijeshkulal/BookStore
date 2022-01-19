@@ -10,9 +10,9 @@ public class BookstoreApplication {
 
     public static void main(String[] args) {
         ApplicationContext context = SpringApplication.run(BookstoreApplication.class, args);
-        log.info("Employee Payroll App Started in {} Environment",
+        log.info("Book store application Started in {} Environment",
                 context.getEnvironment().getProperty("environment"));
-        log.info("Employee Payroll DB User is {}",
+        log.info("book_store_final User is {}",
                 context.getEnvironment().getProperty("spring.datasource.username"));
     }
 }

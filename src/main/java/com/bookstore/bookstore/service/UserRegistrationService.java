@@ -1,6 +1,7 @@
 package com.bookstore.bookstore.service;
 
 import com.bookstore.bookstore.dto.LoginDto;
+import com.bookstore.bookstore.dto.ResetPassword;
 import com.bookstore.bookstore.dto.ResponseDTO;
 import com.bookstore.bookstore.dto.UserRegistrationDTO;
 import com.bookstore.bookstore.exception.UserRegistrationException;
@@ -47,18 +48,18 @@ public class UserRegistrationService implements IUserRegistrationService {
 	}
 
 	@Override
-	public ResponseDTO updateUserById(String token,int userid, UserRegistrationDTO userDTO) 
+	public ResponseDTO updateUserById(String token, int userid, UserRegistrationDTO userDTO)
 	{
 		int userId = TokenUtil.decodeToken(token);
 		Optional<UserRegistrationModel> isUserPresent = userRepository.findById(userId);
-		if (!isUserPresent.isPresent()) 
+		if (isUserPresent.isPresent())
 		{
 			isUserPresent.get().setFullName(userDTO.getFullName());
 
 			isUserPresent.get().setEmailId(userDTO.getEmailId());
 			isUserPresent.get().setPassword(userDTO.getPassword());
 			isUserPresent.get().setUpdatedDate(LocalDate.now());
-			
+			isUserPresent.get().setMobileNo(userDTO.getMobileNo());
 			userRepository.save(isUserPresent.get());
 			return new ResponseDTO("User Updated Successfully");
 		}
@@ -154,4 +155,24 @@ public class UserRegistrationService implements IUserRegistrationService {
 			throw new UserRegistrationException(400,"User is already Register, Please Try with another Email Id");
 		}
 	}
+
+	@Override
+	public ResponseDTO resetPassword(ResetPassword password, String token)
+	{
+		int userId = TokenUtil.decodeToken(token);
+		Optional<UserRegistrationModel> isUserPresent = userRepository.findById(userId);
+		if (isUserPresent.isPresent())
+		{
+			isUserPresent.get().setPassword(password.getPassword());
+			isUserPresent.get().setUpdatedDate(LocalDate.now());
+
+			userRepository.save(isUserPresent.get());
+			return new ResponseDTO("Password updated successfully");
+		}
+		else
+		{
+			throw new UserRegistrationException(400,"Password reset failed");
+		}
+	}
 }
+
