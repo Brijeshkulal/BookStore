@@ -21,7 +21,10 @@ public class UserRegistrationService implements IUserRegistrationService {
 	
 	@Autowired
 	private UserRegistrationRepository userRepository;
-	
+
+	@Autowired
+	JMSUtil jmsUtil;
+
 	@Autowired
 	ModelMapper modelmapper;
 	
@@ -106,27 +109,18 @@ public class UserRegistrationService implements IUserRegistrationService {
 	}
 
 	@Override
-	public ResponseDTO forgotPassword(String email) 
+	public ResponseDTO forgotPassword(String email)
 	{
-		
 		Optional<UserRegistrationModel> isUserPresent = userRepository.findByEmailId(email);
-		if (isUserPresent.isPresent()) 
+		if (isUserPresent.isPresent())
 		{
-			if (isUserPresent.get().getEmailId().equals(email)) 
-			{
-				String body = "http://localhost:8080/resetpassword/"+ TokenUtil.createToken(isUserPresent.get().getId());
-				JMSUtil.sendEmail(isUserPresent.get().getEmailId(), "Reset Password", body);
-				return new ResponseDTO("Password is reset");
-			} 
-			else 
-			{
-				throw new UserRegistrationException(400,"Email id is incorrect");
-			}
+			String body = "http://localhost:4200/resetpassword/"+ TokenUtil.createToken(isUserPresent.get().getId());
+			jmsUtil.sendEmail(isUserPresent.get().getEmailId(), "Reset Password", body);
+			return new ResponseDTO("Reset password link sent to your email "+ email );
+		}else {
+			return new ResponseDTO("Your Email "+email+ " is not registered with us ");
 		}
-		else 
-		{
-			throw new UserRegistrationException(400,"User is already Register, Please Try with another Email Id");
-		}
+
 	}
 
 	@Override
