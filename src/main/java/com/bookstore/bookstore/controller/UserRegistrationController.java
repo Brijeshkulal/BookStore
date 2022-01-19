@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-@CrossOrigin(origins = "*",allowedHeaders = "*")
 @RestController
 @Slf4j
 @CrossOrigin(origins = "*",allowedHeaders = "*")
@@ -26,7 +25,6 @@ public class UserRegistrationController
 	{
 		ResponseDTO userData = registrationService.createUser(userDTO);
 		ResponseDTO resDTO = new ResponseDTO("Create User Details Sucessfully :");
-		//log.warn(ResponseEntity<ResponseDTO>(resDTO,HttpStatus.OK));
 		log.info(String.valueOf(resDTO));
 		return new ResponseEntity<ResponseDTO>(resDTO,HttpStatus.OK);
 	}

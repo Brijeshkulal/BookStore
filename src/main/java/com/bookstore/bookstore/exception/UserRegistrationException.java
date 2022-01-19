@@ -18,7 +18,7 @@ public class UserRegistrationException extends RuntimeException{
 		super(statusmessage);
 	}
 	public UserRegistrationException(String string, HttpStatus ok, Object object, String string2) {
-		// TODO Auto-generated constructor stub
+
 	}
 	
 
