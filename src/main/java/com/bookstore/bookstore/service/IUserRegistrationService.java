@@ -2,6 +2,7 @@ package com.bookstore.bookstore.service;
 
 
 import com.bookstore.bookstore.dto.LoginDto;
+import com.bookstore.bookstore.dto.ResetPassword;
 import com.bookstore.bookstore.dto.ResponseDTO;
 import com.bookstore.bookstore.dto.UserRegistrationDTO;
 
@@ -22,4 +23,6 @@ public interface IUserRegistrationService
 
 
 	int getUserId(String token);
+
+    ResponseDTO resetPassword(ResetPassword password, String token);
 }

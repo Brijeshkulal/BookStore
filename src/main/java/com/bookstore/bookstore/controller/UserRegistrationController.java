@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "*",allowedHeaders = "*")
 @RestController
 @Slf4j
-@CrossOrigin(origins = "*",allowedHeaders = "*")
 public class UserRegistrationController 
 {
 	

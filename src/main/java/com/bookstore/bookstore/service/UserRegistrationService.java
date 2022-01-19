@@ -1,6 +1,7 @@
 package com.bookstore.bookstore.service;
 
 import com.bookstore.bookstore.dto.LoginDto;
+import com.bookstore.bookstore.dto.ResetPassword;
 import com.bookstore.bookstore.dto.ResponseDTO;
 import com.bookstore.bookstore.dto.UserRegistrationDTO;
 import com.bookstore.bookstore.exception.UserRegistrationException;
@@ -10,6 +11,7 @@ import com.bookstore.bookstore.util.JMSUtil;
 import com.bookstore.bookstore.util.TokenUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -23,29 +25,29 @@ public class UserRegistrationService implements IUserRegistrationService {
 	private UserRegistrationRepository userRepository;
 
 	@Autowired
-	JMSUtil jmsUtil;
+	private JMSUtil jmsUtil;
 
 	@Autowired
-	ModelMapper modelmapper;
-	
+	private ModelMapper modelmapper;
+
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
+
 	@Override
-	public ResponseDTO createUser(UserRegistrationDTO userDTO)
-	{
+	public ResponseDTO createUser(UserRegistrationDTO userDTO) {
 		Optional<UserRegistrationModel> isUserPresent = userRepository.findByEmailId(userDTO.getEmailId());
-		if(!isUserPresent.isPresent())
-		{
+		if (!isUserPresent.isPresent()) {
+			// Encoding User Entered Password and saving into database
+			userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+
 			UserRegistrationModel createUser = modelmapper.map(userDTO, UserRegistrationModel.class);
 			createUser.setRegisteredDate(LocalDate.now());
-
 			userRepository.save(createUser);
 			return new ResponseDTO("User Register Sucessfully");
-		}
-		else
-		{
-			throw new UserRegistrationException(400,"User is already Register, Please Try with another Email Id");
+		} else {
+			throw new UserRegistrationException(400, "User is already Register, Please Try with another Email Id");
 		}
 	}
-
 	@Override
 	public ResponseDTO updateUserById(String token,int userid, UserRegistrationDTO userDTO) 
 	{
@@ -151,7 +153,25 @@ public class UserRegistrationService implements IUserRegistrationService {
 		}
 		else
 		{
-			throw new UserRegistrationException(400,"User is already Register, Please Try with another Email Id");
+			throw new UserRegistrationException(400, "User is already Register, Please Try with another Email Id");
+		}
+	}
+
+	@Override
+	public ResponseDTO resetPassword(ResetPassword password, String token)
+	{
+		int userId = TokenUtil.decodeToken(token);
+		Optional<UserRegistrationModel> isUserPresent = userRepository.findById(userId);
+		if (isUserPresent.isPresent())
+		{
+			isUserPresent.get().setPassword(password.getPassword());
+			isUserPresent.get().setUpdatedDate(LocalDate.now());
+			userRepository.save(isUserPresent.get());
+			return new ResponseDTO("Password updated successfully");
+		}
+		else
+		{
+			throw new UserRegistrationException(400,"Password reset failed");
 		}
 	}
 }
