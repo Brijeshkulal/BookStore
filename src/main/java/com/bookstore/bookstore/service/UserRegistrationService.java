@@ -11,6 +11,7 @@ import com.bookstore.bookstore.util.JMSUtil;
 import com.bookstore.bookstore.util.TokenUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -24,7 +25,10 @@ public class UserRegistrationService implements IUserRegistrationService {
 	private UserRegistrationRepository userRepository;
 
 	@Autowired
-	JMSUtil jmsUtil;
+	private PasswordEncoder passwordEncoder;
+
+	@Autowired
+	private  JMSUtil jmsUtil;
 
 	@Autowired
 	ModelMapper modelmapper;
@@ -35,9 +39,11 @@ public class UserRegistrationService implements IUserRegistrationService {
 		Optional<UserRegistrationModel> isUserPresent = userRepository.findByEmailId(userDTO.getEmailId());
 		if(!isUserPresent.isPresent())
 		{
+			// Encoding User Entered Password and saving into database
+			userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+
 			UserRegistrationModel createUser = modelmapper.map(userDTO, UserRegistrationModel.class);
 			createUser.setRegisteredDate(LocalDate.now());
-
 			userRepository.save(createUser);
 			return new ResponseDTO("User Register Sucessfully");
 		}
@@ -52,21 +58,28 @@ public class UserRegistrationService implements IUserRegistrationService {
 	{
 		int userId = TokenUtil.decodeToken(token);
 		Optional<UserRegistrationModel> isUserPresent = userRepository.findById(userId);
+<<<<<<< HEAD
 		if (isUserPresent.isPresent())
 		{
+=======
+//		if (isUserPresent.isPresent())
+//		{
+>>>>>>> cd41e0a9d1edd9e8ea6ac41a35929f1b6211299b
 			isUserPresent.get().setFullName(userDTO.getFullName());
-
 			isUserPresent.get().setEmailId(userDTO.getEmailId());
-			isUserPresent.get().setPassword(userDTO.getPassword());
+			isUserPresent.get().setPassword(passwordEncoder.encode(userDTO.getPassword()));
 			isUserPresent.get().setUpdatedDate(LocalDate.now());
+<<<<<<< HEAD
 			isUserPresent.get().setMobileNo(userDTO.getMobileNo());
+=======
+>>>>>>> cd41e0a9d1edd9e8ea6ac41a35929f1b6211299b
 			userRepository.save(isUserPresent.get());
 			return new ResponseDTO("User Updated Successfully");
-		}
-		else 
-		{
-			throw new UserRegistrationException(400,"User is already Register, Please Try with another Email Id");
-		}
+//		}
+//		else
+//		{
+//			throw new UserRegistrationException(400,"User is already Register, Please Try with another Email Id");
+//		}
 	}
 
 	@Override
@@ -85,25 +98,28 @@ public class UserRegistrationService implements IUserRegistrationService {
 		}
 	}
 
-
 	@Override
 	public ResponseDTO loginUser(LoginDto loginDto)
 	{
 		Optional<UserRegistrationModel> isUserPresent = userRepository.findByEmailId(loginDto.emailId);
 
-		if (isUserPresent.isPresent()) 
+//		loginDto.setPassword(passwordEncoder.encode(loginDto.getPassword()));
+//		passwordEncoder.encode(loginDto.em)
+		if (isUserPresent.isPresent())
 		{
-			if (isUserPresent.get().getEmailId().equals(loginDto.emailId) && isUserPresent.get().getPassword().equals(loginDto.password))
+
+			if (isUserPresent.get().getEmailId().equals(loginDto.emailId) &&
+					isUserPresent.get().getPassword().equals(loginDto.password))
 			{
 				String token = TokenUtil.createToken(isUserPresent.get().getId());
 				return new ResponseDTO("Login is Sucessfully");
 			}
-			else 
+			else
 			{
 				throw new UserRegistrationException(400,"Please check Email Id or Password, Retry");
 			}
-		} 
-		else 
+		}
+		else
 		{
 			throw new UserRegistrationException(400,"User is already Register, Please Try with another Email Id");
 		}
@@ -139,7 +155,6 @@ public class UserRegistrationService implements IUserRegistrationService {
 			return false;
 		}
 	}
-
 
 	@Override
 	public int getUserId(String token) 
