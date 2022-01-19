@@ -58,21 +58,15 @@ public class UserRegistrationService implements IUserRegistrationService {
 	{
 		int userId = TokenUtil.decodeToken(token);
 		Optional<UserRegistrationModel> isUserPresent = userRepository.findById(userId);
-<<<<<<< HEAD
 		if (isUserPresent.isPresent())
 		{
-=======
 //		if (isUserPresent.isPresent())
 //		{
->>>>>>> cd41e0a9d1edd9e8ea6ac41a35929f1b6211299b
 			isUserPresent.get().setFullName(userDTO.getFullName());
 			isUserPresent.get().setEmailId(userDTO.getEmailId());
 			isUserPresent.get().setPassword(passwordEncoder.encode(userDTO.getPassword()));
 			isUserPresent.get().setUpdatedDate(LocalDate.now());
-<<<<<<< HEAD
 			isUserPresent.get().setMobileNo(userDTO.getMobileNo());
-=======
->>>>>>> cd41e0a9d1edd9e8ea6ac41a35929f1b6211299b
 			userRepository.save(isUserPresent.get());
 			return new ResponseDTO("User Updated Successfully");
 //		}
@@ -107,7 +101,6 @@ public class UserRegistrationService implements IUserRegistrationService {
 //		passwordEncoder.encode(loginDto.em)
 		if (isUserPresent.isPresent())
 		{
-
 			if (isUserPresent.get().getEmailId().equals(loginDto.emailId) &&
 					isUserPresent.get().getPassword().equals(loginDto.password))
 			{
@@ -139,7 +132,6 @@ public class UserRegistrationService implements IUserRegistrationService {
 		}
 
 	}
-
 	@Override
 	public Boolean verify(String token) 
 	{
