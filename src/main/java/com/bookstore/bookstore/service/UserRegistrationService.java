@@ -11,11 +11,7 @@ import com.bookstore.bookstore.util.JMSUtil;
 import com.bookstore.bookstore.util.TokenUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-<<<<<<< HEAD
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-=======
-import org.springframework.security.crypto.password.PasswordEncoder;
->>>>>>> 1d7da98607b0e72eda8c0a73ac5209819b9f2880
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -24,19 +20,12 @@ import java.util.Optional;
 
 @Service
 public class UserRegistrationService implements IUserRegistrationService {
-	
+
 	@Autowired
 	private UserRegistrationRepository userRepository;
 
 	@Autowired
-<<<<<<< HEAD
 	private JMSUtil jmsUtil;
-=======
-	private PasswordEncoder passwordEncoder;
-
-	@Autowired
-	private  JMSUtil jmsUtil;
->>>>>>> 1d7da98607b0e72eda8c0a73ac5209819b9f2880
 
 	@Autowired
 	private ModelMapper modelmapper;
@@ -44,15 +33,12 @@ public class UserRegistrationService implements IUserRegistrationService {
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
 
+
 	@Override
 	public ResponseDTO createUser(UserRegistrationDTO userDTO) {
 		Optional<UserRegistrationModel> isUserPresent = userRepository.findByEmailId(userDTO.getEmailId());
-<<<<<<< HEAD
 		if (!isUserPresent.isPresent()) {
-=======
-		if(!isUserPresent.isPresent())
-		{
->>>>>>> 1d7da98607b0e72eda8c0a73ac5209819b9f2880
+
 			// Encoding User Entered Password and saving into database
 			userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
@@ -64,6 +50,7 @@ public class UserRegistrationService implements IUserRegistrationService {
 			throw new UserRegistrationException(400, "User is already Register, Please Try with another Email Id");
 		}
 	}
+
 	@Override
 	public ResponseDTO updateUserById(String token, int userid, UserRegistrationDTO userDTO)
 	{
@@ -71,49 +58,48 @@ public class UserRegistrationService implements IUserRegistrationService {
 		Optional<UserRegistrationModel> isUserPresent = userRepository.findById(userId);
 		if (isUserPresent.isPresent())
 		{
-//		if (isUserPresent.isPresent())
-//		{
 			isUserPresent.get().setFullName(userDTO.getFullName());
+
 			isUserPresent.get().setEmailId(userDTO.getEmailId());
-			isUserPresent.get().setPassword(passwordEncoder.encode(userDTO.getPassword()));
+			isUserPresent.get().setPassword(userDTO.getPassword());
 			isUserPresent.get().setUpdatedDate(LocalDate.now());
 			isUserPresent.get().setMobileNo(userDTO.getMobileNo());
 			userRepository.save(isUserPresent.get());
 			return new ResponseDTO("User Updated Successfully");
-//		}
-//		else
-//		{
-//			throw new UserRegistrationException(400,"User is already Register, Please Try with another Email Id");
-//		}
-	}
-
-	@Override
-	public ResponseDTO deleteUserById(String token, int userid) {
-		
-		int userId = TokenUtil.decodeToken(token);
-		Optional<UserRegistrationModel> isUserPresent = userRepository.findById(userId);
-		if (isUserPresent.isPresent()) 
-		{
-			userRepository.delete(isUserPresent.get());
-			return new ResponseDTO("User Deleted Successfully");
-		} 
-		else 
+		}
+		else
 		{
 			throw new UserRegistrationException(400,"User is already Register, Please Try with another Email Id");
 		}
 	}
 
 	@Override
+	public ResponseDTO deleteUserById(String token, int userid) {
+
+		int userId = TokenUtil.decodeToken(token);
+		Optional<UserRegistrationModel> isUserPresent = userRepository.findById(userId);
+		if (isUserPresent.isPresent())
+		{
+			userRepository.delete(isUserPresent.get());
+			return new ResponseDTO("User Deleted Successfully");
+		}
+		else
+		{
+			throw new UserRegistrationException(400,"User is already Register, Please Try with another Email Id");
+		}
+	}
+
+
+	@Override
 	public ResponseDTO loginUser(LoginDto loginDto)
 	{
 		Optional<UserRegistrationModel> isUserPresent = userRepository.findByEmailId(loginDto.emailId);
+ 	 	String pass = passwordEncoder.encode(loginDto.getPassword());
+		boolean isMatches = passwordEncoder.matches(loginDto.getPassword(),isUserPresent.get().getPassword());
 
-//		loginDto.setPassword(passwordEncoder.encode(loginDto.getPassword()));
-//		passwordEncoder.encode(loginDto.em)
 		if (isUserPresent.isPresent())
 		{
-			if (isUserPresent.get().getEmailId().equals(loginDto.emailId) &&
-					isUserPresent.get().getPassword().equals(loginDto.password))
+			if (isUserPresent.get().getEmailId().equals(loginDto.emailId) && isMatches)
 			{
 				String token = TokenUtil.createToken(isUserPresent.get().getId());
 				return new ResponseDTO("Login is Sucessfully");
@@ -138,29 +124,33 @@ public class UserRegistrationService implements IUserRegistrationService {
 			String body = "http://localhost:4200/resetpassword/"+ TokenUtil.createToken(isUserPresent.get().getId());
 			jmsUtil.sendEmail(isUserPresent.get().getEmailId(), "Reset Password", body);
 			return new ResponseDTO("Reset password link sent to your email "+ email );
-		}else {
+		}
+		else
+		{
 			return new ResponseDTO("Your Email "+email+ " is not registered with us ");
 		}
 
 	}
+
 	@Override
-	public Boolean verify(String token) 
+	public Boolean verify(String token)
 	{
 		int userId = TokenUtil.decodeToken(token);
 		Optional<UserRegistrationModel> isUserPresent = userRepository.findById(userId);
 		if (isUserPresent != null)
 		{
 			return true;
-			
-		} 
-		else 
+
+		}
+		else
 		{
 			return false;
 		}
 	}
 
+
 	@Override
-	public int getUserId(String token) 
+	public int getUserId(String token)
 	{
 		int userId = TokenUtil.decodeToken(token);
 		Optional<UserRegistrationModel> isUserPresent = userRepository.findById(userId);
@@ -170,7 +160,7 @@ public class UserRegistrationService implements IUserRegistrationService {
 		}
 		else
 		{
-			throw new UserRegistrationException(400, "User is already Register, Please Try with another Email Id");
+			throw new UserRegistrationException(400,"User is already Register, Please Try with another Email Id");
 		}
 	}
 
@@ -181,25 +171,7 @@ public class UserRegistrationService implements IUserRegistrationService {
 		Optional<UserRegistrationModel> isUserPresent = userRepository.findById(userId);
 		if (isUserPresent.isPresent())
 		{
-			isUserPresent.get().setPassword(password.getPassword());
-			isUserPresent.get().setUpdatedDate(LocalDate.now());
-			userRepository.save(isUserPresent.get());
-			return new ResponseDTO("Password updated successfully");
-		}
-		else
-		{
-			throw new UserRegistrationException(400,"Password reset failed");
-		}
-	}
-
-	@Override
-	public ResponseDTO resetPassword(ResetPassword password, String token)
-	{
-		int userId = TokenUtil.decodeToken(token);
-		Optional<UserRegistrationModel> isUserPresent = userRepository.findById(userId);
-		if (isUserPresent.isPresent())
-		{
-			isUserPresent.get().setPassword(password.getPassword());
+			isUserPresent.get().setPassword(passwordEncoder.encode(password.getPassword()));
 			isUserPresent.get().setUpdatedDate(LocalDate.now());
 
 			userRepository.save(isUserPresent.get());
@@ -211,4 +183,3 @@ public class UserRegistrationService implements IUserRegistrationService {
 		}
 	}
 }
-

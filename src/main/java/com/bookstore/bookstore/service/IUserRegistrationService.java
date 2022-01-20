@@ -24,5 +24,4 @@ public interface IUserRegistrationService
 	ResponseDTO resetPassword(ResetPassword password, String token);
 	int getUserId(String token);
 
-    ResponseDTO resetPassword(ResetPassword password, String token);
 }

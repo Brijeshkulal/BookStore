@@ -11,21 +11,15 @@ import org.springframework.http.HttpStatus;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-<<<<<<< HEAD
 
-=======
->>>>>>> cd41e0a9d1edd9e8ea6ac41a35929f1b6211299b
+
+
+
 @RestController
 @Slf4j
-<<<<<<< HEAD
-public class UserRegistrationController 
-{
-	
-=======
 @CrossOrigin(origins = "*",allowedHeaders = "*")
 public class UserRegistrationController {
 
->>>>>>> 1d7da98607b0e72eda8c0a73ac5209819b9f2880
 	@Autowired(required = true)
 	private IUserRegistrationService registrationService;
 
