@@ -44,6 +44,7 @@ public class UserRegistrationService implements IUserRegistrationService {
 
 			UserRegistrationModel createUser = modelmapper.map(userDTO, UserRegistrationModel.class);
 			createUser.setRegisteredDate(LocalDate.now());
+			createUser.setUpdatedDate(LocalDate.now());
 			userRepository.save(createUser);
 			return new ResponseDTO("User Register Sucessfully");
 		} else {
@@ -52,8 +53,7 @@ public class UserRegistrationService implements IUserRegistrationService {
 	}
 
 	@Override
-	public ResponseDTO updateUserById(String token, int userid, UserRegistrationDTO userDTO)
-	{
+	public ResponseDTO updateUserById(String token, int userid, UserRegistrationDTO userDTO) {
 		int userId = TokenUtil.decodeToken(token);
 		Optional<UserRegistrationModel> isUserPresent = userRepository.findById(userId);
 		if (isUserPresent.isPresent())

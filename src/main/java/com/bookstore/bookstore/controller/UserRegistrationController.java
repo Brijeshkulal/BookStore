@@ -50,8 +50,8 @@ public class UserRegistrationController {
 		return new ResponseEntity<ResponseDTO>(respDTO, HttpStatus.OK);
 	}
 
-	@PostMapping("/forgotpassword")
-	public ResponseEntity<ResponseDTO> forgotPassword(@RequestParam String email) {
+	@GetMapping("/forgotpassword/{email}")
+	public ResponseEntity<ResponseDTO> forgotPassword(@PathVariable String email) {
 		ResponseDTO respDTO = registrationService.forgotPassword(email);
 		return new ResponseEntity<ResponseDTO>(respDTO, HttpStatus.OK);
 	}
