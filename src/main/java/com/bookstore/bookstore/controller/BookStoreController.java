@@ -14,8 +14,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/bookStore/book")
+@RequestMapping("/book")
 @Slf4j
+@CrossOrigin(origins = "*",allowedHeaders = "*")
 public class BookStoreController {
 
 
