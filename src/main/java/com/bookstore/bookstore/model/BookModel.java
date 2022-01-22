@@ -18,9 +18,8 @@ public class BookModel {
     private String bookName;
     private int price;
     private int noOfBooks;
-
     @Column(name = "image")
     private String image;
-    private int bookQuantity;
+    private int discountPrice;
     private int bookRating;
 }
