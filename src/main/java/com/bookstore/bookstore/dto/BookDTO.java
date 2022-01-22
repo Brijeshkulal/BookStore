@@ -16,4 +16,6 @@ public class BookDTO {
     private int price;
     private int noOfBooks;
     private String image;
+    private int bookQuantity;
+    private int bookRating;
 }

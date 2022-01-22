@@ -10,6 +10,7 @@ import javax.persistence.*;
 public class BookModel {
 
     @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
     private int bookId;
 
     private String bookDetails;
@@ -20,4 +21,6 @@ public class BookModel {
 
     @Column(name = "image")
     private String image;
+    private int bookQuantity;
+    private int bookRating;
 }
