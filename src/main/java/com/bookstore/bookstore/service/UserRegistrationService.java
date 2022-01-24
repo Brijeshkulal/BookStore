@@ -56,12 +56,12 @@ public class UserRegistrationService implements IUserRegistrationService {
 	public ResponseDTO updateUserById(String token, int userid, UserRegistrationDTO userDTO) {
 		int userId = TokenUtil.decodeToken(token);
 		Optional<UserRegistrationModel> isUserPresent = userRepository.findById(userId);
-		if (isUserPresent.isPresent())
+		boolean userActive = isUserPresent.get().isVerify();
+		if (isUserPresent.isPresent() && !userActive)
 		{
 			isUserPresent.get().setFullName(userDTO.getFullName());
 
 			isUserPresent.get().setEmailId(userDTO.getEmailId());
-			isUserPresent.get().setPassword(userDTO.getPassword());
 			isUserPresent.get().setUpdatedDate(LocalDate.now());
 			isUserPresent.get().setMobileNo(userDTO.getMobileNo());
 			userRepository.save(isUserPresent.get());
@@ -75,12 +75,11 @@ public class UserRegistrationService implements IUserRegistrationService {
 
 	@Override
 	public ResponseDTO deleteUserById(String token, int userid) {
-
 		int userId = TokenUtil.decodeToken(token);
 		Optional<UserRegistrationModel> isUserPresent = userRepository.findById(userId);
 		if (isUserPresent.isPresent())
 		{
-			userRepository.delete(isUserPresent.get());
+			isUserPresent.get().setVerify(true);
 			return new ResponseDTO("User Deleted Successfully");
 		}
 		else
@@ -96,13 +95,13 @@ public class UserRegistrationService implements IUserRegistrationService {
 		Optional<UserRegistrationModel> isUserPresent = userRepository.findByEmailId(loginDto.emailId);
  	 	String pass = passwordEncoder.encode(loginDto.getPassword());
 		boolean isMatches = passwordEncoder.matches(loginDto.getPassword(),isUserPresent.get().getPassword());
-
-		if (isUserPresent.isPresent())
+		boolean userActive = isUserPresent.get().isVerify();
+		if (isUserPresent.isPresent() && !userActive)
 		{
 			if (isUserPresent.get().getEmailId().equals(loginDto.emailId) && isMatches)
 			{
 				String token = TokenUtil.createToken(isUserPresent.get().getId());
-				return new ResponseDTO("Login is Sucessfully");
+				return new ResponseDTO("Login is Sucessfully", token);
 			}
 			else
 			{

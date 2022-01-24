@@ -7,6 +7,7 @@ import java.util.List;
 public interface IBookService {
     List<BookDTO> getBook();
     BookDTO addBook(BookDTO bookDTO);
+    BookDTO getBookByID(int id);
 
 }
 

@@ -1,6 +1,7 @@
 package com.bookstore.bookstore.service;
 
 import com.bookstore.bookstore.dto.BookDTO;
+import com.bookstore.bookstore.exception.UserRegistrationException;
 import com.bookstore.bookstore.model.BookModel;
 import com.bookstore.bookstore.repository.BookRepository;
 import com.bookstore.bookstore.repository.UserRegistrationRepository;
@@ -31,11 +32,32 @@ public class BookService implements IBookService{
         return bookDTO;
     }
 
+//    @Override
+//    public List<BookDTO> getBook() {
+//        return bookStoreRepository.findAll().stream().map(book -> {
+//            return new BookDTO(book.getBookId(), book.getBookDetails(), book.getAuthorName(), book.getBookName(),
+//                    book.getPrice(),book.getDiscountPrice(), book.getNoOfBooks() ,book.getImage(),book.getBookRating() );
+//        }).collect(Collectors.toList());
+//    }
+
     @Override
     public List<BookDTO> getBook() {
-        return bookStoreRepository.findAll().stream().map(book -> {
-            return new BookDTO(book.getBookId(), book.getBookDetails(), book.getAuthorName(), book.getBookName(),
-                    book.getPrice(),book.getDiscountPrice(), book.getNoOfBooks() ,book.getImage(),book.getBookRating() );
-        }).collect(Collectors.toList());
+        List<BookDTO> bookDetails = bookStoreRepository.findAll().stream().map
+                        (book -> modelMapper.map(book, BookDTO.class))
+                .collect(Collectors.toList());
+        if(bookDetails.isEmpty()){
+            throw new UserRegistrationException(400,"Book list data is empty");
+        }
+        return bookDetails;
+    }
+
+
+    @Override
+    public BookDTO getBookByID(int id) {
+
+        BookModel book = bookStoreRepository.findById(id).
+                orElseThrow(() -> new UserRegistrationException(400,"Unable to find any Book detail!"));
+        BookDTO bookDetails = modelMapper.map(book, BookDTO.class);
+        return bookDetails;
     }
 }

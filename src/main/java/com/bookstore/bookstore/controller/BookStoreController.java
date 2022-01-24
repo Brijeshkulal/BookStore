@@ -36,4 +36,12 @@ public class BookStoreController {
         ResponseDTO responseDTO = new ResponseDTO("Fetched All Book Details", bookData);
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
+
+
+    @GetMapping(value = "/getBookDetailsByID/{id}")
+    public ResponseEntity<ResponseDTO> getBookDetailsByID(@PathVariable int id) {
+        BookDTO bookDTO = bookService.getBookByID(id);
+        ResponseDTO responseDTO = new ResponseDTO("Fetched by ID : Book Details", bookDTO);
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+    }
 }

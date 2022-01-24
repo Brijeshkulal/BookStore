@@ -26,8 +26,11 @@ public class UserRegistrationModel
 	private String password;
 	private String mobileNo;
 	private boolean verify;
+	private String address;
+	private String state;
+	private String city;
+	private String type;
 
-	
 	public UserRegistrationModel() {
 		
 	}

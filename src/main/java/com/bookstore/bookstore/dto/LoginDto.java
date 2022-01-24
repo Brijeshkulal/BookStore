@@ -12,5 +12,6 @@ public class LoginDto {
 
     public String emailId;
     public String password;
+    public String token;
 
 }

@@ -22,4 +22,5 @@ public class BookModel {
     private String image;
     private int discountPrice;
     private int bookRating;
+
 }
