@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name="UserRegistration")
@@ -18,7 +19,6 @@ public class UserRegistrationModel
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int Id;
 	private String fullName;
-
 	private LocalDate registeredDate;
 	private LocalDate updatedDate;
 	@Column(name = "email")
@@ -30,6 +30,18 @@ public class UserRegistrationModel
 	private String state;
 	private String city;
 	private String type;
+
+	@OneToMany(cascade = CascadeType.ALL, targetEntity = CartItem.class)
+	@JoinColumn(name = "userId")
+	private List<CartItem> cartBooks;
+
+	@OneToMany(cascade = CascadeType.ALL, targetEntity = Wishlist.class)
+	@JoinColumn(name = "userId")
+	private List<Wishlist> wishlistBook;
+	@OneToMany(cascade = CascadeType.ALL, targetEntity = Order.class)
+	@JoinColumn(name = "userId")
+	private List<Order> orderBookDetails;
+
 
 	public UserRegistrationModel() {
 		
