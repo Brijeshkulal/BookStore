@@ -1,9 +1,10 @@
 package com.bookstore.bookstore.service;
 
-import com.bookstore.bookstore.dto.CartDTO;
-import com.bookstore.bookstore.model.CartModel;
+import com.bookstore.bookstore.model.CartItem;
+
+import java.util.List;
 
 public interface ICartService {
+    List<CartItem> addBooktoCart(String token, int bookId);
 
-      CartModel addToCart(CartDTO cartDTO);
 }

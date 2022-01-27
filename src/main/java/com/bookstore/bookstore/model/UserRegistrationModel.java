@@ -32,14 +32,14 @@ public class UserRegistrationModel
 	private String type;
 
 	@OneToMany(cascade = CascadeType.ALL, targetEntity = CartItem.class)
-	@JoinColumn(name = "userId")
+	@JoinColumn(name = "Id")
 	private List<CartItem> cartBooks;
 
 	@OneToMany(cascade = CascadeType.ALL, targetEntity = Wishlist.class)
-	@JoinColumn(name = "userId")
+	@JoinColumn(name = "Id")
 	private List<Wishlist> wishlistBook;
 	@OneToMany(cascade = CascadeType.ALL, targetEntity = Order.class)
-	@JoinColumn(name = "userId")
+	@JoinColumn(name = "Id")
 	private List<Order> orderBookDetails;
 
 

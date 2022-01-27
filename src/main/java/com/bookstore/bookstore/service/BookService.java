@@ -32,14 +32,6 @@ public class BookService implements IBookService{
         return bookDTO;
     }
 
-//    @Override
-//    public List<BookDTO> getBook() {
-//        return bookStoreRepository.findAll().stream().map(book -> {
-//            return new BookDTO(book.getBookId(), book.getBookDetails(), book.getAuthorName(), book.getBookName(),
-//                    book.getPrice(),book.getDiscountPrice(), book.getNoOfBooks() ,book.getImage(),book.getBookRating() );
-//        }).collect(Collectors.toList());
-//    }
-
     @Override
     public List<BookDTO> getBook() {
         List<BookDTO> bookDetails = bookStoreRepository.findAll().stream().map

@@ -15,7 +15,7 @@ public class Order {
     @Column(name = "order_placed_time")
     private LocalDateTime orderPlacedTime;
 
-
+    private int quantity;
 
     private String orderStatus;
 
@@ -23,24 +23,7 @@ public class Order {
 
     private Long addressId;
 
-
-    @OneToMany
-            (cascade = CascadeType.ALL, targetEntity = Quantity.class)
-    @JoinColumn(name = "orderId")
-    private List<Quantity> QuantityOfBooks;
-
     @ManyToMany(cascade = CascadeType.ALL)
     private List<BookModel> BooksList;
 
-    public Order() {
-    }
-
-    public Order(Long orderId, LocalDateTime orderPlacedTime, List<Quantity> quantityOfBooks,
-                 List<BookModel> booksList) {
-        super();
-        this.orderId = orderId;
-        this.orderPlacedTime = orderPlacedTime;
-        QuantityOfBooks = quantityOfBooks;
-        BooksList = booksList;
-    }
 }
