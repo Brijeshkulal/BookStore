@@ -15,15 +15,18 @@ public class Order {
     @Column(name = "order_placed_time")
     private LocalDateTime orderPlacedTime;
 
-    private int quantity;
-
     private String orderStatus;
 
     private Double totalPrice;
 
     private Long addressId;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    private List<BookModel> BooksList;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    private UserRegistrationModel user;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="orderId")
+    private CartItem cart;
 
 }

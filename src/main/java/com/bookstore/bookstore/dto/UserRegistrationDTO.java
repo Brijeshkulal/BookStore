@@ -15,9 +15,5 @@ public class UserRegistrationDTO
 	private String emailId;
 	private String password;
 	private String mobileNo;
-	private String address;
-	private String state;
-	private String city;
-	private String type;
 
 }

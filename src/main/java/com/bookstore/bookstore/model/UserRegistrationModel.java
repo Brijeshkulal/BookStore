@@ -26,10 +26,6 @@ public class UserRegistrationModel
 	private String password;
 	private String mobileNo;
 	private boolean verify;
-	private String address;
-	private String state;
-	private String city;
-	private String type;
 
 	@OneToMany(cascade = CascadeType.ALL, targetEntity = CartItem.class)
 	@JoinColumn(name = "Id")
@@ -38,9 +34,14 @@ public class UserRegistrationModel
 	@OneToMany(cascade = CascadeType.ALL, targetEntity = Wishlist.class)
 	@JoinColumn(name = "Id")
 	private List<Wishlist> wishlistBook;
+
 	@OneToMany(cascade = CascadeType.ALL, targetEntity = Order.class)
 	@JoinColumn(name = "Id")
 	private List<Order> orderBookDetails;
+
+	@OneToMany(cascade = CascadeType.ALL, targetEntity = Address.class)
+	@JoinColumn(name = "Id")
+	private List<Address> address;
 
 
 	public UserRegistrationModel() {

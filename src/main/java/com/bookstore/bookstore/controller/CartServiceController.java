@@ -20,7 +20,7 @@ public class CartServiceController {
     @Autowired
     private ICartService cartService;
 
-    @GetMapping("/addbookCart/{token}/{bookId}")
+    @PostMapping("/addbookCart/{token}/{bookId}")
     public ResponseEntity<ResponseDTO> addBooksToCart(@PathVariable String token, @PathVariable int bookId) {
         List<CartItem> cartItem = cartService.addBooktoCart(token,bookId);
         return ResponseEntity.status(HttpStatus.ACCEPTED)
