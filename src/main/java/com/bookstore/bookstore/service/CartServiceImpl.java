@@ -5,6 +5,7 @@ import com.bookstore.bookstore.model.BookModel;
 import com.bookstore.bookstore.model.CartItem;
 import com.bookstore.bookstore.model.UserRegistrationModel;
 import com.bookstore.bookstore.repository.BookRepository;
+import com.bookstore.bookstore.repository.CartRepository;
 import com.bookstore.bookstore.repository.UserRegistrationRepository;
 import com.bookstore.bookstore.util.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,54 +21,87 @@ public class CartServiceImpl implements ICartService {
 
     @Autowired
     private UserRegistrationRepository userRepository;
-
     @Autowired
     private BookRepository bookRepository;
 
+    @Autowired
+    private CartRepository cartRepository;
+
+
     @Override
-    public List<CartItem> addBooktoCart(String token, int bookId) {
-        //decode the token to get userId
+    public String addBooktoCart(String token, int bookId) {
+
         int userId = TokenUtil.decodeToken(token);
+
         UserRegistrationModel user = userRepository.findById(userId).orElse(null);
-        BookModel book = bookRepository.findById(bookId).get();
-        //checking book is present or not in the repo
-        if (book != null) {
-            int noOfBooks = book.getNoOfBooks();
-            if (noOfBooks > 0) {
-                List<BookModel> books = null;
-                //Adding the already present books in the cart to the bookmodel list
-                for (CartItem cart : user.getCartBooks()) {
-                    books = cart.getBooksList();
-                }
-                // if booklist is null we are storing the book details in repo
-                if (books == null) {
-                    UserRegistrationModel userdetails = this.cartbooks(book, user);
-                    return userRepository.save(userdetails).getCartBooks();
-                }
 
-                Optional<BookModel> cartbook = books.stream().filter(t -> t.getBookId() == bookId).findFirst();
-                if (cartbook.isPresent()) {
-                    throw null;
-                } else {
-                    UserRegistrationModel userdetails = this.cartbooks(book, user);
-                    return userRepository.save(userdetails).getCartBooks();
-                }
+        BookModel book = bookRepository.findById(bookId).orElse(null);
 
+        // if the book present in wishlist and book number is not equal to zero
+        int noOfBooks = book.getNoOfBooks();
+
+        if (noOfBooks > 0) {
+            List<BookModel> books = findBookList(token);
+            if (books == null){
+                addBookToRepo(user, book);
+                book.setNoOfBooks(book.getNoOfBooks()-1);
             }
-            throw new UserRegistrationException(400, "Out of stock you cannot add to cart");
+            Optional<BookModel> cartbook = books.stream().filter(t -> t.getBookId() == bookId).findFirst();
+            if (cartbook.isPresent()) {
+                return "Item is already present in the cart ";
+            } else {
+                addBookToRepo(user, book);
+                book.setNoOfBooks(book.getNoOfBooks()-1);
+            }
         }
-        return null;
+        return "Book is out off stock !!!";
     }
 
-
-    public UserRegistrationModel cartbooks(BookModel book, UserRegistrationModel user) {
-        CartItem cart = new CartItem();
-        ArrayList<BookModel> booklist = new ArrayList<>();
-        booklist.add(book);
+    public String addBookToRepo(UserRegistrationModel user, BookModel book){
+        CartItem cart=new CartItem();
+        cart.setUserRegistrationModel(user);
+        cart.setBookModel(book);
         cart.setCreatedTime(LocalDateTime.now());
-        cart.setBooksList(booklist);
-        user.getCartBooks().add(cart);
-        return user;
+        cartRepository.save(cart);
+        return "Item added successfully";
     }
 
+    @Override
+    public List<BookModel> findBookList(String token){
+
+        int userId = TokenUtil.decodeToken(token);
+
+        UserRegistrationModel user = userRepository.findById(userId).orElse(null);
+        List<CartItem> booklist = cartRepository.findBookById(userId);
+        List<BookModel> listOfBook = new ArrayList<BookModel>();
+        for (int i=0; i<booklist.size();i++) {
+            listOfBook.add(booklist.get(i).getBookModel());
+        }return listOfBook;
+    }
+
+    @Override
+    public String deleteBookFromCart( int bookId ,String token) {
+        int userId = TokenUtil.decodeToken(token);
+        cartRepository.deleteByBookIdandId(bookId, userId);
+
+        return "Book deleted Successfully from cart !!!";
+    }
+
+
+    @Override
+    public String emptyCart(String token){
+        int userId = TokenUtil.decodeToken(token);
+
+        UserRegistrationModel user = userRepository.findById(userId).orElse(null);
+
+        List<CartItem> booklist = cartRepository.findBookById(userId);
+
+
+        for (int i=0; i<booklist.size();i++) {
+            cartRepository.deleteById(booklist.get(i).getCartId());
+
+        }
+
+        return "Cart is Empty";
+    }
 }

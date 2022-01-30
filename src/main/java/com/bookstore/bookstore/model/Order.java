@@ -11,16 +11,19 @@ import java.util.List;
 @Table(name="order_table")
 public class Order {
     @Id
-    private Long orderId;
-    @Column(name = "order_placed_time")
+    private int orderId;
+
     private LocalDateTime orderPlacedTime;
 
     private String orderStatus;
 
     private Double totalPrice;
 
-    private Long addressId;
+    private int quantity;
 
+    @OneToMany()
+    @JoinColumn(name = "bookId")
+    private List<BookModel> bookModel;
 
     @ManyToOne(cascade = CascadeType.ALL)
     private UserRegistrationModel user;
@@ -28,5 +31,4 @@ public class Order {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="orderId")
     private CartItem cart;
-
 }

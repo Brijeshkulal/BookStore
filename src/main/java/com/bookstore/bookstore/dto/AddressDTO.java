@@ -8,15 +8,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AddressDTO {
-    private String pinCode;
-
     private String address;
-
-    private String city;
-
-    private String landmark;
-
     private String state;
-
-    private String country;
+    private String city;
+    private String type;
 }

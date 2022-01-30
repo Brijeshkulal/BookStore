@@ -19,4 +19,12 @@ public class Wishlist {
 
 
     private LocalDateTime wishlistTime;
+
+    @OneToOne()
+    @JoinColumn(name = "bookId")
+    private BookModel bookModel;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    private UserRegistrationModel userRegistrationModel;
+
 }

@@ -13,16 +13,9 @@ public class Address {
     @Column(name = "address_id")
     private int addressId;
 
-    private String pinCode;
-
     private String address;
-
-    private String city;
-
-    private String landmark;
-
     private String state;
-
-    private String country;
+    private String city;
+    private String type;
 
 }

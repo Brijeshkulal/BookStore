@@ -27,9 +27,8 @@ public class UserRegistrationModel
 	private String mobileNo;
 	private boolean verify;
 
-	@OneToMany(cascade = CascadeType.ALL, targetEntity = CartItem.class)
-	@JoinColumn(name = "Id")
-	private List<CartItem> cartBooks;
+	@OneToOne(cascade = CascadeType.ALL)
+	private CartItem cartBooks;
 
 	@OneToMany(cascade = CascadeType.ALL, targetEntity = Wishlist.class)
 	@JoinColumn(name = "Id")
