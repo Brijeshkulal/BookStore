@@ -12,19 +12,16 @@ import java.util.List;
 public class Wishlist {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long wishlistId;
+    private int wishlistId;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    private List<BookModel> booksList;
-
-
-    private LocalDateTime wishlistTime;
+    private LocalDateTime createdTime;
 
     @OneToOne()
     @JoinColumn(name = "bookId")
     private BookModel bookModel;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @OneToOne()
+    @JoinColumn(name = "Id")
     private UserRegistrationModel userRegistrationModel;
 
 }

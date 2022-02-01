@@ -1,12 +1,11 @@
 package com.bookstore.bookstore.service;
 
-import com.bookstore.bookstore.exception.UserRegistrationException;
 import com.bookstore.bookstore.model.BookModel;
-import com.bookstore.bookstore.model.CartItem;
 import com.bookstore.bookstore.model.UserRegistrationModel;
+import com.bookstore.bookstore.model.Wishlist;
 import com.bookstore.bookstore.repository.BookRepository;
-import com.bookstore.bookstore.repository.CartRepository;
 import com.bookstore.bookstore.repository.UserRegistrationRepository;
+import com.bookstore.bookstore.repository.WishlistRepository;
 import com.bookstore.bookstore.util.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,19 +16,21 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CartServiceImpl implements ICartService {
+public class WishlistImpl implements IWishlistService{
 
     @Autowired
     private UserRegistrationRepository userRepository;
+
     @Autowired
     private BookRepository bookRepository;
 
     @Autowired
-    private CartRepository cartRepository;
+    private WishlistRepository wishlistRepository;
+
 
 
     @Override
-    public String addBooktoCart(String token, int bookId) {
+    public String addBooktoWishlist(String token, int bookId) {
 
         int userId = TokenUtil.decodeToken(token);
 
@@ -42,11 +43,11 @@ public class CartServiceImpl implements ICartService {
 
         if (noOfBooks > 0) {
             List<BookModel> books = findBookList(token);
-            if (books == null) {
+            if (books == null){
                 addBookToRepo(user, book);
                 book.setNoOfBooks(book.getNoOfBooks());
             }
-            Optional<BookModel> cartbook = books.stream().filter(t -> t.getBookId() == bookId).findFirst();
+            Optional<BookModel> cartbook = books.stream().filter(t -> t.getBookId() == bookId).findAny();
             if (cartbook.isPresent()) {
                 return "Item is already present in the cart ";
             } else {
@@ -59,11 +60,11 @@ public class CartServiceImpl implements ICartService {
 
 
     public String addBookToRepo(UserRegistrationModel user, BookModel book){
-        CartItem cart=new CartItem();
-        cart.setUserRegistrationModel(user);
-        cart.setBookModel(book);
-        cart.setCreatedTime(LocalDateTime.now());
-        cartRepository.save(cart);
+        Wishlist wishlist=new Wishlist();
+        wishlist.setUserRegistrationModel(user);
+        wishlist.setBookModel(book);
+        wishlist.setCreatedTime(LocalDateTime.now());
+        wishlistRepository.save(wishlist);
         return "Item added successfully";
     }
 
@@ -71,35 +72,17 @@ public class CartServiceImpl implements ICartService {
     public List<BookModel> findBookList(String token){
 
         int userId = TokenUtil.decodeToken(token);
-        List<CartItem> booklist = cartRepository.findBookById(userId);
-        List<BookModel> listOfBook = new ArrayList<BookModel>();
-        for (CartItem cartItem : booklist) {
-            listOfBook.add(cartItem.getBookModel());
-        }
-        return listOfBook;
-    }
-
-    @Override
-    public String deleteBookFromCart( int bookId ,String token) {
-        int userId = TokenUtil.decodeToken(token);
-        cartRepository.deleteByBookIdandId(bookId, userId);
-
-        return "Book deleted Successfully from cart !!!";
-    }
-
-
-    @Override
-    public String emptyCart(String token){
-        int userId = TokenUtil.decodeToken(token);
 
         UserRegistrationModel user = userRepository.findById(userId).orElse(null);
 
-        List<CartItem> booklist = cartRepository.findBookById(userId);
+        List<Wishlist> booklist = wishlistRepository.findBookById(userId);
 
-        for (CartItem cartItem : booklist) {
-            cartRepository.deleteById(cartItem.getCartId());
+        List<BookModel> listOfBook = new ArrayList<BookModel>();
+
+        for (int i=0; i<booklist.size();i++) {
+            listOfBook.add(booklist.get(i).getBookModel());
         }
-
-        return "Cart is Empty";
+        return listOfBook;
     }
 }
+

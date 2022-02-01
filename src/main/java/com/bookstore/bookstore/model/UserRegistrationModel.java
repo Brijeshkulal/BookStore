@@ -30,9 +30,8 @@ public class UserRegistrationModel
 	@OneToOne(cascade = CascadeType.ALL)
 	private CartItem cartBooks;
 
-	@OneToMany(cascade = CascadeType.ALL, targetEntity = Wishlist.class)
-	@JoinColumn(name = "Id")
-	private List<Wishlist> wishlistBook;
+	@OneToOne(cascade = CascadeType.ALL)
+	private Wishlist wishlistBook;
 
 	@OneToMany(cascade = CascadeType.ALL, targetEntity = Order.class)
 	@JoinColumn(name = "Id")
