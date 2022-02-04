@@ -1,8 +1,9 @@
 package com.bookstore.bookstore.service;
 
 import com.bookstore.bookstore.dto.AddressDTO;
-import com.bookstore.bookstore.model.Address;
+import com.bookstore.bookstore.model.AddressModel;
 
 public interface IAddressService {
-    Address addAddress(AddressDTO address, String token);
+
+    AddressModel addAddress(AddressDTO address, String token);
 }

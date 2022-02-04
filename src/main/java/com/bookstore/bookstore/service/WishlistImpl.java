@@ -1,6 +1,7 @@
 package com.bookstore.bookstore.service;
 
 import com.bookstore.bookstore.model.BookModel;
+import com.bookstore.bookstore.model.CartItem;
 import com.bookstore.bookstore.model.UserRegistrationModel;
 import com.bookstore.bookstore.model.Wishlist;
 import com.bookstore.bookstore.repository.BookRepository;
@@ -44,18 +45,22 @@ public class WishlistImpl implements IWishlistService{
         if (noOfBooks > 0) {
             List<BookModel> books = findBookList(token);
             if (books == null){
+                book.setQuantityInCart(1);
                 addBookToRepo(user, book);
-                book.setNoOfBooks(book.getNoOfBooks());
+//                book.setNoOfBooks(book.getNoOfBooks()-1);
             }
-            Optional<BookModel> cartbook = books.stream().filter(t -> t.getBookId() == bookId).findAny();
+            Optional<BookModel> cartbook = books.stream().filter(t -> t.getBookId() == bookId).findFirst();
             if (cartbook.isPresent()) {
                 return "Item is already present in the cart ";
             } else {
+                book.setQuantityInCart(1);
                 addBookToRepo(user, book);
-                book.setNoOfBooks(book.getNoOfBooks());
+                book.setNoOfBooks(book.getNoOfBooks()-1);
             }
+        }else {
+            return "Book is out of Stock !!!";
         }
-        return "Book is out off stock !!!";
+        return "Item is added in wishlist !!!";
     }
 
 
@@ -73,7 +78,6 @@ public class WishlistImpl implements IWishlistService{
 
         int userId = TokenUtil.decodeToken(token);
 
-        UserRegistrationModel user = userRepository.findById(userId).orElse(null);
 
         List<Wishlist> booklist = wishlistRepository.findBookById(userId);
 
@@ -82,7 +86,17 @@ public class WishlistImpl implements IWishlistService{
         for (int i=0; i<booklist.size();i++) {
             listOfBook.add(booklist.get(i).getBookModel());
         }
+        for (Wishlist wishlist : booklist) {
+            listOfBook.add(wishlist.getBookModel());
+        }
         return listOfBook;
+    }
+
+    @Override
+    public String deleteBookFromWishlist(String token, int bookId) {
+        int userId = TokenUtil.decodeToken(token);
+        wishlistRepository.deleteByBookIdandId(bookId, userId);
+        return "Book deleted Successfully from cart !!!";
     }
 }
 

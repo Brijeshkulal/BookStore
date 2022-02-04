@@ -24,12 +24,19 @@ public class WishlistController {
     public ResponseEntity<ResponseDTO> addBooktoWishlist(@PathVariable String token, @PathVariable int bookId) {
         String message = wishlistService.addBooktoWishlist(token,bookId);
         return ResponseEntity.status(HttpStatus.ACCEPTED)
-                .body(new ResponseDTO("book added to cart", message));
+                .body(new ResponseDTO("book added to wishlist", message));
     }
 
     @GetMapping("/GetBookList/{token}")
     public List<BookModel> getCartBookList(@PathVariable String token) {
         return wishlistService.findBookList(token);
+    }
+
+    @DeleteMapping("/deleteBookFromCart/{token}/{bookId}")
+    public ResponseEntity<ResponseDTO> deleteBookFromCart(@PathVariable String token,@PathVariable int bookId) {
+        String message = wishlistService.deleteBookFromWishlist(token,bookId);
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body(new ResponseDTO("Book is deleted from wishlist", message));
     }
 
 }

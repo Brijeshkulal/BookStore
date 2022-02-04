@@ -42,19 +42,20 @@ public class CartServiceImpl implements ICartService {
 
         if (noOfBooks > 0) {
             List<BookModel> books = findBookList(token);
-            if (books == null) {
+            if (books == null){
                 addBookToRepo(user, book);
-                book.setNoOfBooks(book.getNoOfBooks());
             }
             Optional<BookModel> cartbook = books.stream().filter(t -> t.getBookId() == bookId).findFirst();
             if (cartbook.isPresent()) {
+                cartbook.get().setQuantityInCart(cartbook.get().getQuantityInCart()+1);
                 return "Item is already present in the cart ";
             } else {
                 addBookToRepo(user, book);
-                book.setNoOfBooks(book.getNoOfBooks());
             }
+        }else {
+            return "Book is out of Stock !!!";
         }
-        return "Book is out off stock !!!";
+        return "Item is added in cart !!!";
     }
 
 
@@ -91,9 +92,7 @@ public class CartServiceImpl implements ICartService {
     @Override
     public String emptyCart(String token){
         int userId = TokenUtil.decodeToken(token);
-
         UserRegistrationModel user = userRepository.findById(userId).orElse(null);
-
         List<CartItem> booklist = cartRepository.findBookById(userId);
 
         for (CartItem cartItem : booklist) {

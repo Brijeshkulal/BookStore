@@ -10,4 +10,7 @@ public interface IWishlistService {
     String addBooktoWishlist(String token, int bookId);
 
     List<BookModel> findBookList(String token);
+
+   String deleteBookFromWishlist(String token, int bookId);
+
 }

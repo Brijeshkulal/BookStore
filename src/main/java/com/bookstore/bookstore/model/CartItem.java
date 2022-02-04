@@ -4,7 +4,6 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Data
@@ -13,7 +12,7 @@ public class CartItem {
     @GeneratedValue
     private int cartId;
 
-    @OneToMany()
+    @OneToOne (cascade = CascadeType.ALL)
     @JoinColumn(name = "bookId")
     private BookModel bookModel;
 
@@ -22,4 +21,6 @@ public class CartItem {
     private UserRegistrationModel userRegistrationModel;
 
     private LocalDateTime createdTime;
+
+
 }

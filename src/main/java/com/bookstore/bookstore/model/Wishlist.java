@@ -11,10 +11,8 @@ import java.util.List;
 @Table(name="wishbook")
 public class Wishlist {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int wishlistId;
-
-    private LocalDateTime createdTime;
+    @GeneratedValue
+    private int cartId;
 
     @OneToOne()
     @JoinColumn(name = "bookId")
@@ -24,4 +22,5 @@ public class Wishlist {
     @JoinColumn(name = "Id")
     private UserRegistrationModel userRegistrationModel;
 
+    private LocalDateTime createdTime;
 }

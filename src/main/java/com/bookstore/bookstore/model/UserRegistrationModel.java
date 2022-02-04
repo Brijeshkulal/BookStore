@@ -2,8 +2,6 @@ package com.bookstore.bookstore.model;
 
 import com.bookstore.bookstore.dto.UserRegistrationDTO;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -12,9 +10,8 @@ import java.util.List;
 @Entity
 @Table(name="UserRegistration")
 @Data
-public class UserRegistrationModel 
+public class UserRegistrationModel
 {
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int Id;
@@ -27,24 +24,8 @@ public class UserRegistrationModel
 	private String mobileNo;
 	private boolean verify;
 
-	@OneToOne(cascade = CascadeType.ALL)
-	private CartItem cartBooks;
 
-	@OneToOne(cascade = CascadeType.ALL)
-	private Wishlist wishlistBook;
-
-	@OneToMany(cascade = CascadeType.ALL, targetEntity = Order.class)
-	@JoinColumn(name = "Id")
-	private List<Order> orderBookDetails;
-
-	@OneToMany(cascade = CascadeType.ALL, targetEntity = Address.class)
-	@JoinColumn(name = "Id")
-	private List<Address> address;
-
-
-	public UserRegistrationModel() {
-		
-	}
+	public UserRegistrationModel() {}
 
 	public UserRegistrationModel(int Id, UserRegistrationDTO userRegistrationDTO)
 	{
@@ -53,7 +34,5 @@ public class UserRegistrationModel
 		this.emailId = userRegistrationDTO.getEmailId();
 		this.password = userRegistrationDTO.getPassword();
 	}
-
-
 
 }

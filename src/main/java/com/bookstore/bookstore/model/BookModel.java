@@ -3,6 +3,7 @@ package com.bookstore.bookstore.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name="Book")
@@ -22,5 +23,7 @@ public class BookModel {
     private String image;
     private int discountPrice;
     private int bookRating;
+    private int quantityInCart;
+
 
 }

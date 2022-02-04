@@ -93,7 +93,7 @@ public class UserRegistrationService implements IUserRegistrationService {
 	public ResponseDTO loginUser(LoginDto loginDto)
 	{
 		Optional<UserRegistrationModel> isUserPresent = userRepository.findByEmailId(loginDto.emailId);
- 	 	String pass = passwordEncoder.encode(loginDto.getPassword());
+		String pass = passwordEncoder.encode(loginDto.getPassword());
 		boolean isMatches = passwordEncoder.matches(loginDto.getPassword(),isUserPresent.get().getPassword());
 		boolean userActive = isUserPresent.get().isVerify();
 		if (isUserPresent.isPresent() && !userActive)
@@ -101,7 +101,7 @@ public class UserRegistrationService implements IUserRegistrationService {
 			if (isUserPresent.get().getEmailId().equals(loginDto.emailId) && isMatches)
 			{
 				String token = TokenUtil.createToken(isUserPresent.get().getId());
-				return new ResponseDTO("Login is Sucessfully", token);
+				return new ResponseDTO("Login is Sucessfully", token,isUserPresent);
 			}
 			else
 			{

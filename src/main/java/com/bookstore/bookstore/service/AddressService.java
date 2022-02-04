@@ -1,13 +1,12 @@
 package com.bookstore.bookstore.service;
 
 import com.bookstore.bookstore.dto.AddressDTO;
-import com.bookstore.bookstore.model.Address;
-import com.bookstore.bookstore.model.BookModel;
+import com.bookstore.bookstore.model.AddressModel;
 import com.bookstore.bookstore.model.UserRegistrationModel;
 import com.bookstore.bookstore.repository.AddressRepository;
+import com.bookstore.bookstore.repository.BookRepository;
 import com.bookstore.bookstore.repository.UserRegistrationRepository;
 import com.bookstore.bookstore.util.TokenUtil;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,21 +15,25 @@ import org.springframework.stereotype.Service;
 public class AddressService implements IAddressService{
 
     @Autowired
-    private ModelMapper modelMapper;
+    AddressRepository addressRepository;
 
     @Autowired
-    private UserRegistrationRepository userRepository;
+    UserRegistrationRepository userRepository;
 
     @Autowired
-    private AddressRepository addressRepo;
+    BookRepository bookStoreRepository;
+
 
     @Override
-    public Address addAddress(AddressDTO address, String token) {
+    public AddressModel addAddress(AddressDTO address, String token) {
         int userId = TokenUtil.decodeToken(token);
         UserRegistrationModel user = userRepository.findById(userId).orElse(null);
-        Address addressDetails = modelMapper.map(address,Address.class);
-        user.getAddress().add(addressDetails);
-        addressRepo.save(addressDetails);
-        return addressDetails;
+        AddressModel addressDetails=new AddressModel();
+        addressDetails.setAddress(address.getAddress());
+        addressDetails.setCity(address.getCity());
+        addressDetails.setState(address.getState());
+//        addressDetails.setType(address.getType());
+        addressDetails.setUserRegistrationModel(user);
+        return addressRepository.save(addressDetails);
     }
 }

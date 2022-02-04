@@ -4,18 +4,20 @@ import lombok.Data;
 
 import javax.persistence.*;
 
-@Data
 @Entity
-@Table(name = "Address")
-public class Address {
+@Data
+public class AddressModel {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "address_id")
+    @GeneratedValue()
     private int addressId;
 
     private String address;
     private String state;
     private String city;
-    private String type;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "Id")
+    private UserRegistrationModel userRegistrationModel;
+
 
 }
