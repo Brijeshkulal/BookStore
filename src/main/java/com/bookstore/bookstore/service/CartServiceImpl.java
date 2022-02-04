@@ -1,6 +1,4 @@
 package com.bookstore.bookstore.service;
-
-import com.bookstore.bookstore.exception.UserRegistrationException;
 import com.bookstore.bookstore.model.BookModel;
 import com.bookstore.bookstore.model.CartItem;
 import com.bookstore.bookstore.model.UserRegistrationModel;
@@ -37,7 +35,6 @@ public class CartServiceImpl implements ICartService {
 
         BookModel book = bookRepository.findById(bookId).orElse(null);
 
-        // if the book present in wishlist and book number is not equal to zero
         int noOfBooks = book.getNoOfBooks();
 
         if (noOfBooks > 0) {
@@ -47,7 +44,6 @@ public class CartServiceImpl implements ICartService {
             }
             Optional<BookModel> cartbook = books.stream().filter(t -> t.getBookId() == bookId).findFirst();
             if (cartbook.isPresent()) {
-                cartbook.get().setQuantityInCart(cartbook.get().getQuantityInCart()+1);
                 return "Item is already present in the cart ";
             } else {
                 addBookToRepo(user, book);
@@ -84,21 +80,7 @@ public class CartServiceImpl implements ICartService {
     public String deleteBookFromCart( int bookId ,String token) {
         int userId = TokenUtil.decodeToken(token);
         cartRepository.deleteByBookIdandId(bookId, userId);
-
         return "Book deleted Successfully from cart !!!";
     }
 
-
-    @Override
-    public String emptyCart(String token){
-        int userId = TokenUtil.decodeToken(token);
-        UserRegistrationModel user = userRepository.findById(userId).orElse(null);
-        List<CartItem> booklist = cartRepository.findBookById(userId);
-
-        for (CartItem cartItem : booklist) {
-            cartRepository.deleteById(cartItem.getCartId());
-        }
-
-        return "Cart is Empty";
-    }
 }

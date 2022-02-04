@@ -46,10 +46,19 @@ public class BookService implements IBookService{
 
     @Override
     public BookDTO getBookByID(int id) {
-
         BookModel book = bookStoreRepository.findById(id).
                 orElseThrow(() -> new UserRegistrationException(400,"Unable to find any Book detail!"));
         BookDTO bookDetails = modelMapper.map(book, BookDTO.class);
         return bookDetails;
+    }
+
+    @Override
+    public List<BookModel> sortPriceLowToHigh(){
+        return bookStoreRepository.findAllBookByPriceAsc();
+    }
+
+    @Override
+    public List<BookModel> sortPriceHighToLow(){
+        return bookStoreRepository.findAllBookByPriceDsc();
     }
 }

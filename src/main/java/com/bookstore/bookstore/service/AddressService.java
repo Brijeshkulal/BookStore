@@ -32,7 +32,6 @@ public class AddressService implements IAddressService{
         addressDetails.setAddress(address.getAddress());
         addressDetails.setCity(address.getCity());
         addressDetails.setState(address.getState());
-//        addressDetails.setType(address.getType());
         addressDetails.setUserRegistrationModel(user);
         return addressRepository.save(addressDetails);
     }

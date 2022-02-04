@@ -44,4 +44,18 @@ public class BookStoreController {
         ResponseDTO responseDTO = new ResponseDTO("Fetched by ID : Book Details", bookDTO);
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
+
+    @GetMapping("/sortByPriceAsc")
+    public ResponseEntity<ResponseDTO> getBookByPriceAsc() {
+        List<BookModel> bookData = bookService.sortPriceLowToHigh();
+        ResponseDTO responseDTO = new ResponseDTO("Sorted all books by price low to high ", bookData);
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+    }
+
+    @GetMapping("/sortByPriceDsc")
+    public ResponseEntity<ResponseDTO> getBookByPriceDsc() {
+        List<BookModel> bookData = bookService.sortPriceHighToLow();
+        ResponseDTO responseDTO = new ResponseDTO("Sorted all books by price high to low ", bookData);
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+    }
 }

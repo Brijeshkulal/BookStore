@@ -1,7 +1,6 @@
 package com.bookstore.bookstore.service;
 
 import com.bookstore.bookstore.model.BookModel;
-import com.bookstore.bookstore.model.CartItem;
 import com.bookstore.bookstore.model.UserRegistrationModel;
 import com.bookstore.bookstore.model.Wishlist;
 import com.bookstore.bookstore.repository.BookRepository;
@@ -39,15 +38,12 @@ public class WishlistImpl implements IWishlistService{
 
         BookModel book = bookRepository.findById(bookId).orElse(null);
 
-        // if the book present in wishlist and book number is not equal to zero
         int noOfBooks = book.getNoOfBooks();
 
         if (noOfBooks > 0) {
             List<BookModel> books = findBookList(token);
             if (books == null){
-                book.setQuantityInCart(1);
                 addBookToRepo(user, book);
-//                book.setNoOfBooks(book.getNoOfBooks()-1);
             }
             Optional<BookModel> cartbook = books.stream().filter(t -> t.getBookId() == bookId).findFirst();
             if (cartbook.isPresent()) {
@@ -55,7 +51,6 @@ public class WishlistImpl implements IWishlistService{
             } else {
                 book.setQuantityInCart(1);
                 addBookToRepo(user, book);
-                book.setNoOfBooks(book.getNoOfBooks()-1);
             }
         }else {
             return "Book is out of Stock !!!";
@@ -77,15 +72,9 @@ public class WishlistImpl implements IWishlistService{
     public List<BookModel> findBookList(String token){
 
         int userId = TokenUtil.decodeToken(token);
-
-
         List<Wishlist> booklist = wishlistRepository.findBookById(userId);
 
         List<BookModel> listOfBook = new ArrayList<BookModel>();
-
-        for (int i=0; i<booklist.size();i++) {
-            listOfBook.add(booklist.get(i).getBookModel());
-        }
         for (Wishlist wishlist : booklist) {
             listOfBook.add(wishlist.getBookModel());
         }
