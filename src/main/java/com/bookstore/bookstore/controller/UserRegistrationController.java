@@ -23,22 +23,9 @@ public class UserRegistrationController {
 
 	@PostMapping("/createuser")
 	public ResponseEntity<ResponseDTO> createUser(@RequestBody UserRegistrationDTO userDTO) {
-		ResponseDTO userData = registrationService.createUser(userDTO);
-		ResponseDTO resDTO = new ResponseDTO("Create User Details Sucessfully :");
+		ResponseDTO resDTO = registrationService.createUser(userDTO);
 		log.info(String.valueOf(resDTO));
 		return new ResponseEntity<ResponseDTO>(resDTO, HttpStatus.OK);
-	}
-
-	@PutMapping("/updateuser/{token}")
-	public ResponseEntity<ResponseDTO> updateUser(@PathVariable String token,@PathVariable int userid, @RequestBody UserRegistrationDTO userDTO) {
-		ResponseDTO respDTO = registrationService.updateUserById(token,userid, userDTO);
-		return new ResponseEntity<ResponseDTO>(respDTO, HttpStatus.OK);
-	}
-
-	@DeleteMapping("/deleteuser/{token}/{userid}")
-	public ResponseEntity<ResponseDTO> deleteUser(@PathVariable String token, @PathVariable int userid) {
-		ResponseDTO respDTO = registrationService.deleteUserById(token, userid);
-		return new ResponseEntity<ResponseDTO>(respDTO, HttpStatus.OK);
 	}
 
 	@PostMapping("/loginuser")
@@ -53,6 +40,23 @@ public class UserRegistrationController {
 		return new ResponseEntity<ResponseDTO>(respDTO, HttpStatus.OK);
 	}
 
+	@PostMapping("/resetpassword/{token}")
+	ResponseEntity<ResponseDTO> resetPassword(@RequestBody ResetPassword password, @PathVariable String token) {
+		ResponseDTO respDTO = registrationService.resetPassword(password, token);
+		return new ResponseEntity<ResponseDTO>(respDTO, HttpStatus.OK);
+	}
+
+	@PutMapping("/updateuser/{token}")
+	public ResponseEntity<ResponseDTO> updateUser(@PathVariable String token,@PathVariable int userid, @RequestBody UserRegistrationDTO userDTO) {
+		ResponseDTO respDTO = registrationService.updateUserById(token,userid, userDTO);
+		return new ResponseEntity<ResponseDTO>(respDTO, HttpStatus.OK);
+	}
+
+	@DeleteMapping("/deleteuser/{token}/{userid}")
+	public ResponseEntity<ResponseDTO> deleteUser(@PathVariable String token, @PathVariable int userid) {
+		ResponseDTO respDTO = registrationService.deleteUserById(token, userid);
+		return new ResponseEntity<ResponseDTO>(respDTO, HttpStatus.OK);
+	}
 
 	@GetMapping("/verifyemail/{token}")
 	public Boolean verifyEmail(@PathVariable String token) {
@@ -64,9 +68,5 @@ public class UserRegistrationController {
 		return registrationService.getUserId(token);
 	}
 
-	@PostMapping("/resetpassword/{token}")
-	ResponseEntity<ResponseDTO> resetPassword(@RequestBody ResetPassword password, @PathVariable String token) {
-		ResponseDTO respDTO = registrationService.resetPassword(password, token);
-		return new ResponseEntity<ResponseDTO>(respDTO, HttpStatus.OK);
-	}
+
 }

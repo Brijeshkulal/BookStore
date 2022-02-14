@@ -12,6 +12,7 @@ import java.util.List;
 
 @Repository
 public interface BookRepository extends JpaRepository<BookModel, Integer> {
+
     @Transactional
     @Modifying
     @Query(value = "SELECT * FROM book ORDER BY price ASC" , nativeQuery = true)

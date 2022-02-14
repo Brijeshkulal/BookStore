@@ -47,9 +47,8 @@ public class WishlistImpl implements IWishlistService{
             }
             Optional<BookModel> cartbook = books.stream().filter(t -> t.getBookId() == bookId).findFirst();
             if (cartbook.isPresent()) {
-                return "Item is already present in the cart ";
+                return "Item is already present in the wishlist ";
             } else {
-                book.setQuantityInCart(1);
                 addBookToRepo(user, book);
             }
         }else {

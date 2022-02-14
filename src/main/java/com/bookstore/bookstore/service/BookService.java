@@ -32,6 +32,7 @@ public class BookService implements IBookService{
         return bookDTO;
     }
 
+    //to get all the books from repo
     @Override
     public List<BookDTO> getBook() {
         List<BookDTO> bookDetails = bookStoreRepository.findAll().stream().map
